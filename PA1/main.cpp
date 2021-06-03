@@ -5,6 +5,36 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <fstream>
+#include <map>
+
+const std::string WHITESPACE = " \n\r\t\f\v";
+
+std::string leftTrim(const std::string & line)
+{
+    size_t start = line.find_first_not_of(WHITESPACE);
+    if(start == std::string::npos){
+        return "";
+    }
+    else{
+        return line.substr(start);
+    }
+}
+
+std::string rightTrim(const std::string & line)
+{
+    size_t end = line.find_last_not_of(WHITESPACE);
+    if(end == std::string::npos){
+        return "";
+    }
+    else{
+        line.substr(0, end + 1);
+    }
+}
+
+std::string trim(const std::string & line) {
+    return rightTrim(leftTrim(line));
+}
 
 class gate{
 protected:
@@ -15,10 +45,10 @@ protected:
     bool visited;
 
 public:
-    gate(std::string n, bool v, bool visit = false){
+    gate(std::string n, bool v = false, bool visit = false){
         this->name = n;
         this->val = v;
-        this->visited = visit ;
+        this->visited = visit;
         this->inDegree = 0;
     };
 
@@ -27,7 +57,7 @@ public:
     }
 
     void addNeighbour(gate* gate){
-        this->neighbour.emplace_back(gate);
+        this->neighbour.push_back(gate);
     };
 
     void logicOperation(const char* &op, std::vector<gate*> input, bool output){
@@ -81,14 +111,54 @@ public:
 
 std::queue<gate*> q;
 
-void readNetlist(){
+std::map<std::string, gate> gateMap;
 
+void readNetlist(std::ifstream & netlist){
+    std::string line;
+    while(netlist){
+        std::getline(netlist, line);
+        if(netlist){
+            if(line[0] == '#'){
+                continue;
+            }
+            else if(line == ""){
+                continue;
+            }
+            //TODO: do i have to consider "input"?
+            else if(line.find("INPUT")){
+                std::size_t found = 0;
+                found = line.find_first_of("INPUT");
+                if(found!=std::string::npos){
+                    std::string tmp = line.substr(found);
+                    std::string inputName = trim(tmp);
+                    gateMap[inputName] = gate(inputName);
+                }
+            }
+            else if(line.find("OUTPUT")){
+                std::size_t found = 0;
+                found = line.find_first_of("OUTPUT");
+                if(found!=std::string::npos){
+                    std::string tmp = line.substr(found);
+                    std::string outputName = trim(tmp);
+                    gateMap[outputName] = gate(outputName);
+                }
+            }
+        }
+    }
 };
 
-void readInputVal(){
+void readInputVal(std::ifstream & inputValue){
 
 };
 
 int main(int argc, char * argv[]){
+    std::string netlistName = argv[1];
+    std::string inputValueName = argv[2];
+    std::ifstream netlist;
+    std::ifstream inputValue;
+    netlist.open(netlistName);
+    inputValue.open(inputValueName);
 
+    readNetlist(netlist);
+    readInputVal(inputValue);
 };
