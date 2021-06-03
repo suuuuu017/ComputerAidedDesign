@@ -11,18 +11,23 @@ protected:
     std::string name;
     bool val;
     int inDegree;
-    std::vector<gate*> parent;
-    std::vector<gate*> child;
+    std::vector<gate*> neighbour;
     bool visited;
 
 public:
-    gate(std::string name, bool val){
-        name = name;
-        val = val;
+    gate(std::string n, bool v, bool visit = false){
+        this->name = n;
+        this->val = v;
+        this->visited = visit ;
+        this->inDegree = 0;
     };
 
-    void addNeighbour(){
+    void visitGate(){
+        this->visited = true;
+    }
 
+    void addNeighbour(gate* gate){
+        this->neighbour.emplace_back(gate);
     };
 
     void logicOperation(const char* &op, std::vector<gate*> input, bool output){
@@ -68,6 +73,10 @@ public:
         }
         this->val = output;
     };
+
+    void assignInDegree(){
+        this->inDegree = neighbour.size();
+    }
 };
 
 std::queue<gate*> q;
