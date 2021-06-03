@@ -7,8 +7,8 @@
 
 class gate{
 protected:
-    bool val;
     std::string name;
+    bool val;
     int inDegree;
     std::vector<gate*> neighbour;
     bool visited;
@@ -33,6 +33,10 @@ void readNetlist(){
 
 };
 
-int main(){
+void readInputVal(){
+
+};
+
+int main(int argc, char * argv[]){
 
 };
