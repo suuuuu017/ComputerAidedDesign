@@ -9,6 +9,9 @@
 #include <map>
 #include <sstream>
 
+class gate;
+std::map<std::string, gate> gateMap;
+
 const std::string WHITESPACE = " \n\r\t\f\v";
 
 std::string leftTrim(const std::string & line)
@@ -54,6 +57,14 @@ public:
         this->visited = visit;
         this->inDegree = 0;
     };
+
+    std::vector<std::string> getNeighbour(){
+        return neighbour;
+    }
+
+    std::vector<std::string> getDericted(){
+        return directed;
+    }
 
     void updateVal(bool val){
         this->val = val;
@@ -106,52 +117,57 @@ public:
         return directedName;
     }
 
-    void logicOperation(const char* &op, std::vector<gate*> input, bool output){
-        output = (*input.begin())->val;
-        if(strcmp(op, "AND") == 0 || strcmp(op, "and") == 0){
-            for(auto it = ++input.begin(); it != input.end(); ++it) {
-                output = output & (*it)->val;
+    void logicOperation(const char *op, std::vector<std::string> input){
+        std::vector<std::string>::iterator it;
+        std::string inGateName;
+        bool output = val;
+        if(input.size()) {
+            inGateName = *input.begin();
+            output = gateMap.at(inGateName).getVal();
+            std::cout << inGateName << output << std::endl;
+            if (strcmp(op, "AND") == 0 || strcmp(op, "and") == 0) {
+                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                    output = output & gateMap.at((*it)).getVal();
+                }
+            }
+            if (strcmp(op, "OR") == 0 || strcmp(op, "or") == 0) {
+                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                    output = output | gateMap.at((*it)).getVal();
+                }
+            } else if (strcmp(op, "NAND") == 0 || strcmp(op, "nand") == 0) {
+                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                    output = output & gateMap.at((*it)).getVal();
+                }
+                output = !output;
+            } else if (strcmp(op, "NOR") == 0 || strcmp(op, "nor") == 0) {
+                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                    output = output | gateMap.at((*it)).getVal();
+                }
+                output = !output;
+            } else if (strcmp(op, "XOR") == 0 || strcmp(op, "xor") == 0) {
+                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                    output = output ^ gateMap.at((*it)).getVal();
+                }
+            } else if (strcmp(op, "XNOR") == 0 || strcmp(op, "xnor") == 0) {
+                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                    output = output ^ gateMap.at((*it)).getVal();
+                }
+                output = !output;
+            } else if (strcmp(op, "NOT") == 0 || strcmp(op, "not") == 0) {
+                output = !output;
+            } else if (strcmp(op, "BUF") == 0 || strcmp(op, "buf") == 0) {
+                output = output;
             }
         }
-        if(strcmp(op, "OR") == 0 || strcmp(op, "or") == 0){
-            for(auto it = ++input.begin(); it != input.end(); ++it) {
-                output = output | (*it)->val;
-            }
-        }
-        else if(strcmp(op, "NAND") == 0 || strcmp(op, "nand") == 0){
-            for(auto it = ++input.begin(); it != input.end(); ++it) {
-                output = output & (*it)->val;
-            }
-            output = !output;
-        }
-        else if(strcmp(op, "NOR") == 0 || strcmp(op, "nor") == 0){
-            for(auto it = ++input.begin(); it != input.end(); ++it) {
-                output = output | (*it)->val;
-            }
-            output = !output;
-        }
-        else if(strcmp(op, "XOR") == 0 || strcmp(op, "xor") == 0) {
-            for (auto it = ++input.begin(); it != input.end(); ++it) {
-                output = output ^ (*it)->val;
-            }
-        }
-        else if(strcmp(op, "XNOR") == 0 || strcmp(op, "xnor") == 0) {
-            for (auto it = ++input.begin(); it != input.end(); ++it) {
-                output = output ^ (*it)->val;
-            }
-            output = !output;
-        }
-        else if(strcmp(op, "NOT") == 0 || strcmp(op, "not") == 0) {
-            output = !output;
-        }
-        else if (strcmp(op, "BUF") == 0 || strcmp(op, "buf") == 0) {
-            output = output;
-        }
-        this->val = output;
+        val = output;
     };
 
-    void assignInDegree(){
-        this->inDegree = neighbour.size();
+    void increaseInDegree(){
+        this->inDegree = this->inDegree + 1;
+    }
+
+    void decreaseInDegree(){
+        this->inDegree = this->inDegree - 1;
     }
 
     int readInDegree(){
@@ -161,7 +177,6 @@ public:
 
 std::queue<gate> q;
 
-std::map<std::string, gate> gateMap;
 std::map<std::string, gate> outputMap;
 
 void readNetlist(std::ifstream & netlist){
@@ -184,6 +199,7 @@ void readNetlist(std::ifstream & netlist){
                     std::string inputName = line.substr(found1 + 1, found2 - found1 - 1);
                     //TODO: check if this subtraction is valid
                     gate t = gate(inputName);
+                    t.updateType("buf");
                     gateMap.insert(std::make_pair(inputName, t));
                 }
                 continue;
@@ -223,7 +239,8 @@ void readNetlist(std::ifstream & netlist){
                         gate = leftTrim(gate);
                     }
                     t.addNeighbour(gate);
-                    std::cout << " gate is   " << gate << std::endl;
+                    t.increaseInDegree();
+//                    std::cout << " degree is   " << t.readInDegree() << std::endl;
                     gateMap.at(gate).addDirected(gateName);
                 }
                 gateMap.insert(std::make_pair(gateName, t));
@@ -270,26 +287,52 @@ int main(int argc, char * argv[]){
     readInputVal(inputValue);
 
     while(!q.empty()){
-        std::cout << q.front().getName() << " " << q.front().readDirected() << " "
-                     << std::endl;
-
+        gate current = q.front();
+        const char *type = (current.readType()).data();
+        std::cout << "type is " << type << "gate is " << current.getName() << "value is" << current.getVal() << std::endl;
+        current.logicOperation(type, current.getNeighbour());
+        std::vector<std::string> toDecrease = current.getDericted();
+        std::vector<std::string>::iterator it;
+        std::string toDecreaseName;
+        for(auto it = toDecrease.begin(); it != toDecrease.end(); ++it) {
+            gate decreasing = gateMap.at(*it);
+            decreasing.decreaseInDegree();
+            if(decreasing.readInDegree() == 0){
+                q.push(decreasing);
+            }
+        }
+        current.visitGate();
+//        std::cout << q.front().getName() << " visitibg front" << q.front().readDirected() << " "
+//                  << std::endl;
         q.pop();
+//        q.pop();
     }
 
-    std::map<std::string, gate, int>::iterator it;
+    std::map<std::string, gate>::iterator it;
 
-    for (it = gateMap.begin(); it != gateMap.end(); it++)
-    {
-        std::cout << it->first    // string (key)
-                  << " : name is "
-                  << it->second.getName()   // string's value
-                  << " type is "
-                  << it->second.readType()
-                  << " neighbout is "
-                  << it->second.readNeightbour()
-                  << " directed is "
-                  << it->second.readDirected()
-                  << std::endl;
+    for (it = outputMap.begin(); it != outputMap.end(); it++){
+        std::string name = it->first;
+        std::cout << name << " ";
+        bool val = gateMap.at(name).getVal();
+        std::cout << val << std::endl;
     }
+
+//    std::map<std::string, gate, int>::iterator it;
+
+//    for (it = gateMap.begin(); it != gateMap.end(); it++){
+//        std::cout << it->first    // string (key)
+//                  << " : name is "
+//                  << it->second.getName()   // string's value
+//                  << " type is "
+//                  << it->second.readType()
+//                  << " neighbout is "
+//                  << it->second.readNeightbour()
+//                  << " directed is "
+//                  << it->second.readDirected()
+//                  << " indegree is"
+//                  << it->second.readInDegree()
+//                  << std::endl;
+//
+//    }
 
 };
