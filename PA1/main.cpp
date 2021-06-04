@@ -66,7 +66,7 @@ public:
         return directed;
     }
 
-    void updateVal(bool val){
+    void updateVal(bool& val){
         this->val = val;
     }
 
@@ -82,7 +82,7 @@ public:
         return name;
     }
 
-    bool getVal(){
+    bool& getVal(){
         return val;
     }
 
@@ -124,7 +124,7 @@ public:
         if(input.size()) {
             inGateName = *input.begin();
             output = gateMap.at(inGateName).getVal();
-            std::cout << inGateName << output << std::endl;
+//            std::cout << inGateName << output << std::endl;
             if (strcmp(op, "AND") == 0 || strcmp(op, "and") == 0) {
                 for (auto it = ++input.begin(); it != input.end(); ++it) {
                     output = output & gateMap.at((*it)).getVal();
@@ -159,7 +159,8 @@ public:
                 output = output;
             }
         }
-        val = output;
+        this->val = output;
+//        std::cout << "current gate operation is on   "<< name << "    " << this->val << " this is the value" << std::endl;
     };
 
     void increaseInDegree(){
@@ -289,16 +290,19 @@ int main(int argc, char * argv[]){
     while(!q.empty()){
         gate current = q.front();
         const char *type = (current.readType()).data();
-        std::cout << "type is " << type << "gate is " << current.getName() << "value is" << current.getVal() << std::endl;
         current.logicOperation(type, current.getNeighbour());
+//        std::cout << " type is " << type << " gate is " << current.getName() << " value is " << current.getVal() << std::endl;
+        gateMap.at(current.getName()).updateVal(current.getVal());
         std::vector<std::string> toDecrease = current.getDericted();
         std::vector<std::string>::iterator it;
-        std::string toDecreaseName;
-        for(auto it = toDecrease.begin(); it != toDecrease.end(); ++it) {
-            gate decreasing = gateMap.at(*it);
-            decreasing.decreaseInDegree();
-            if(decreasing.readInDegree() == 0){
-                q.push(decreasing);
+        if(!toDecrease.empty()) {
+            for(auto it = toDecrease.begin(); it != toDecrease.end(); ++it) {
+                gate& decreasing = gateMap.at(*it);
+//                std::cout << "to decrease is " << "gate is " << decreasing.getName() << "value is" << decreasing.readInDegree() << std::endl;
+                decreasing.decreaseInDegree();
+                if (decreasing.readInDegree() == 0) {
+                    q.push(decreasing);
+                }
             }
         }
         current.visitGate();
