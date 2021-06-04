@@ -43,7 +43,9 @@ protected:
     bool val;
     int inDegree;
     std::vector<std::string> neighbour;
+    std::vector<std::string> directed;
     bool visited;
+    std::string gateType;
 
 public:
     gate(std::string n, bool v = false, bool visit = false){
@@ -57,8 +59,20 @@ public:
         this->val = val;
     }
 
+    void updateType(std::string type){
+        this->gateType = type;
+    }
+
+    std::string readType(){
+        return gateType;
+    }
+
     std::string getName(){
         return name;
+    }
+
+    bool getVal(){
+        return val;
     }
 
     void visitGate(){
@@ -68,6 +82,29 @@ public:
     void addNeighbour(std::string gate){
         this->neighbour.push_back(gate);
     };
+
+    void addDirected(std::string gate){
+        this->directed.push_back(gate);
+    };
+
+    std::string readNeightbour(){
+        std::string neighbourName = "";
+        std::vector<std::string>::iterator it;
+        for(it = neighbour.begin(); it != neighbour.end(); ++it) {
+            neighbourName = neighbourName + (*it);
+        }
+        return neighbourName;
+    }
+
+    std::string readDirected(){
+        std::string directedName = "";
+        std::vector<std::string>::iterator it;
+        for(it = directed.begin(); it != directed.end(); ++it) {
+//            std::cout << "it is " << *it << std::endl;
+            directedName = directedName + (*it);
+        }
+        return directedName;
+    }
 
     void logicOperation(const char* &op, std::vector<gate*> input, bool output){
         output = (*input.begin())->val;
@@ -122,10 +159,9 @@ public:
     }
 };
 
-std::queue<gate*> q;
+std::queue<gate> q;
 
 std::map<std::string, gate> gateMap;
-std::map<std::string, gate> inputMap;
 std::map<std::string, gate> outputMap;
 
 void readNetlist(std::ifstream & netlist){
@@ -168,14 +204,27 @@ void readNetlist(std::ifstream & netlist){
             else if(line.find("=")){
                 //TODO: why is !line.find
                 std::size_t found1 = line.find('=');
-                std::string gateName = line.substr(0, found1);
+                std::size_t found2 = line.find('(');
+                //TODO: fix this hard code
+                std::string gateName = line.substr(0, found1 - 1);
                 gate t = gate(gateName);
-                std::string Name = line.substr(found1);
+                //TODO: fix this hard code
+                std::string gateType = line.substr(found1 + 2, found2 - found1 - 2);
+//                std::cout << gateType << " gate type is " << std::endl;
+                t.updateType(gateType);
+                //TODO: fix this hard code
+                std::string Name = line.substr(found2 + 1);
                 std::stringstream ss(Name);
                 while(ss.good()){
                     std::string gate;
                     getline( ss, gate, ',' );
+                    if(gate.find(')')){
+                        gate = gate.substr(0, gate.find(')') );
+                        gate = leftTrim(gate);
+                    }
                     t.addNeighbour(gate);
+                    std::cout << " gate is   " << gate << std::endl;
+                    gateMap.at(gate).addDirected(gateName);
                 }
                 gateMap.insert(std::make_pair(gateName, t));
                 continue;
@@ -201,6 +250,7 @@ void readInputVal(std::ifstream & inputValue){
                     updateVal = false;
                 }
                 gateMap.at(gateName).updateVal(updateVal);
+                q.push(gateMap.at(gateName));
             }
         }
     }
@@ -218,4 +268,28 @@ int main(int argc, char * argv[]){
     readNetlist(netlist);
 
     readInputVal(inputValue);
+
+    while(!q.empty()){
+        std::cout << q.front().getName() << " " << q.front().readDirected() << " "
+                     << std::endl;
+
+        q.pop();
+    }
+
+    std::map<std::string, gate, int>::iterator it;
+
+    for (it = gateMap.begin(); it != gateMap.end(); it++)
+    {
+        std::cout << it->first    // string (key)
+                  << " : name is "
+                  << it->second.getName()   // string's value
+                  << " type is "
+                  << it->second.readType()
+                  << " neighbout is "
+                  << it->second.readNeightbour()
+                  << " directed is "
+                  << it->second.readDirected()
+                  << std::endl;
+    }
+
 };
