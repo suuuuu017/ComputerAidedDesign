@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <map>
+#include <sstream>
 
 const std::string WHITESPACE = " \n\r\t\f\v";
 
@@ -41,7 +42,7 @@ protected:
     std::string name;
     bool val;
     int inDegree;
-    std::vector<gate*> neighbour;
+    std::vector<std::string> neighbour;
     bool visited;
 
 public:
@@ -52,11 +53,15 @@ public:
         this->inDegree = 0;
     };
 
+    std::string getName(){
+        return name;
+    }
+
     void visitGate(){
         this->visited = true;
     }
 
-    void addNeighbour(gate* gate){
+    void addNeighbour(std::string gate){
         this->neighbour.push_back(gate);
     };
 
@@ -107,11 +112,17 @@ public:
     void assignInDegree(){
         this->inDegree = neighbour.size();
     }
+
+    int readInDegree(){
+        return inDegree
+    }
 };
 
 std::queue<gate*> q;
 
 std::map<std::string, gate> gateMap;
+std::map<std::string, gate> inputMap;
+std::map<std::string, gate> outputMap;
 
 void readNetlist(std::ifstream & netlist){
     std::string line;
@@ -124,24 +135,46 @@ void readNetlist(std::ifstream & netlist){
             else if(line == ""){
                 continue;
             }
-            //TODO: do i have to consider "input"?
-            else if(line.find("INPUT")){
-                std::size_t found = 0;
-                found = line.find_first_of("INPUT");
-                if(found!=std::string::npos){
-                    std::string tmp = line.substr(found);
-                    std::string inputName = trim(tmp);
-                    gateMap[inputName] = gate(inputName);
+                //TODO: do i have to consider "input"?
+            else if(!line.find("INPUT")){
+                std::size_t found1 = 0;
+                found1 = line.find('(');
+                if(found1!=std::string::npos){
+                    std::size_t found2 = line.find(')');
+                    std::string inputName = line.substr(found1 + 1, found2 - found1 - 1);
+                    //TODO: check if this subtraction is valid
+                    gate t = gate(inputName);
+                    inputMap.insert(std::make_pair(inputName, t));
                 }
+                continue;
             }
-            else if(line.find("OUTPUT")){
-                std::size_t found = 0;
-                found = line.find_first_of("OUTPUT");
-                if(found!=std::string::npos){
-                    std::string tmp = line.substr(found);
-                    std::string outputName = trim(tmp);
-                    gateMap[outputName] = gate(outputName);
+            else if(!line.find("OUTPUT")){
+                //TODO: why is !line.find
+                std::size_t found1 = 0;
+                found1 = line.find('(');
+                if(found1!=std::string::npos){
+                    std::size_t found2 = line.find(')');
+                    std::string outputName = line.substr(found1 + 1, found2 - found1 - 1);
+                    //TODO: check if this subtraction is valid
+                    gate t = gate(outputName);
+                    outputMap.insert(std::make_pair(outputName, t));
                 }
+                continue;
+            }
+            else if(line.find("=")){
+                //TODO: why is !line.find
+                std::size_t found1 = line.find('=');
+                std::string gateName = line.substr(0, found1);
+                gate t = gate(gateName);
+                std::string Name = line.substr(found1);
+                std::stringstream ss(Name);
+                while(ss.good()){
+                    std::string gate;
+                    getline( ss, gate, ',' );
+                    t.addNeighbour(gate);
+                }
+                gateMap.insert(std::make_pair(gateName, t));
+                continue;
             }
         }
     }
@@ -160,5 +193,6 @@ int main(int argc, char * argv[]){
     inputValue.open(inputValueName);
 
     readNetlist(netlist);
+
     readInputVal(inputValue);
 };
