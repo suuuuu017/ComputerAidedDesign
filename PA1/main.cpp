@@ -53,6 +53,10 @@ public:
         this->inDegree = 0;
     };
 
+    void updateVal(bool val){
+        this->val = val;
+    }
+
     std::string getName(){
         return name;
     }
@@ -114,7 +118,7 @@ public:
     }
 
     int readInDegree(){
-        return inDegree
+        return inDegree;
     }
 };
 
@@ -144,7 +148,7 @@ void readNetlist(std::ifstream & netlist){
                     std::string inputName = line.substr(found1 + 1, found2 - found1 - 1);
                     //TODO: check if this subtraction is valid
                     gate t = gate(inputName);
-                    inputMap.insert(std::make_pair(inputName, t));
+                    gateMap.insert(std::make_pair(inputName, t));
                 }
                 continue;
             }
@@ -181,6 +185,25 @@ void readNetlist(std::ifstream & netlist){
 };
 
 void readInputVal(std::ifstream & inputValue){
+    std::string line;
+    while(inputValue){
+        std::getline(inputValue, line);
+        if(inputValue){
+            std::size_t found = line.find(" ");
+            if(found!=std::string::npos){
+                std::string gateName = line.substr(0, found);
+                std::string gateVal = line.substr(found + 1);
+                bool updateVal;
+                if(gateVal == "1"){
+                    updateVal = true;
+                }
+                else{
+                    updateVal = false;
+                }
+                gateMap.at(gateName).updateVal(updateVal);
+            }
+        }
+    }
 
 };
 
