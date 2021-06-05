@@ -227,12 +227,12 @@ void readNetlist(std::ifstream & netlist){
                 //TODO: fix this hard code
                 std::string gateName = line.substr(0, found1);
                 gateName = trim(gateName);
-                std::cout << "gatename is ???" << gateName << " end"<< std::endl;
+//                std::cout << "gatename is ???" << gateName << " end"<< std::endl;
                 gate t = gate(gateName);
                 //TODO: fix this hard code
                 std::string gateType = line.substr(found1 + 1, found2 - found1 - 1);
                 gateType = trim(gateType);
-                std::cout << "gatetype is ......." << gateType << " end"<< std::endl;
+//                std::cout << "gatetype is ......." << gateType << " end"<< std::endl;
 //                std::cout << gateType << " gate type is " << std::endl;
                 t.updateType(gateType);
                 //TODO: fix this hard code
