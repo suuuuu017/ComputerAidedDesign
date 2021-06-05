@@ -32,7 +32,7 @@ std::string rightTrim(const std::string & line)
         return "";
     }
     else{
-        line.substr(0, end + 1);
+        return line.substr(0, end + 1);
     }
 }
 
@@ -126,30 +126,30 @@ public:
             output = gateMap.at(inGateName).getVal();
 //            std::cout << inGateName << output << std::endl;
             if (strcmp(op, "AND") == 0 || strcmp(op, "and") == 0) {
-                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                for (it = ++input.begin(); it != input.end(); ++it) {
                     output = output & gateMap.at((*it)).getVal();
                 }
             }
             if (strcmp(op, "OR") == 0 || strcmp(op, "or") == 0) {
-                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                for (it = ++input.begin(); it != input.end(); ++it) {
                     output = output | gateMap.at((*it)).getVal();
                 }
             } else if (strcmp(op, "NAND") == 0 || strcmp(op, "nand") == 0) {
-                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                for (it = ++input.begin(); it != input.end(); ++it) {
                     output = output & gateMap.at((*it)).getVal();
                 }
                 output = !output;
             } else if (strcmp(op, "NOR") == 0 || strcmp(op, "nor") == 0) {
-                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                for (it = ++input.begin(); it != input.end(); ++it) {
                     output = output | gateMap.at((*it)).getVal();
                 }
                 output = !output;
             } else if (strcmp(op, "XOR") == 0 || strcmp(op, "xor") == 0) {
-                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                for (it = ++input.begin(); it != input.end(); ++it) {
                     output = output ^ gateMap.at((*it)).getVal();
                 }
             } else if (strcmp(op, "XNOR") == 0 || strcmp(op, "xnor") == 0) {
-                for (auto it = ++input.begin(); it != input.end(); ++it) {
+                for (it = ++input.begin(); it != input.end(); ++it) {
                     output = output ^ gateMap.at((*it)).getVal();
                 }
                 output = !output;
