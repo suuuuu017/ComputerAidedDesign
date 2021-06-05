@@ -198,6 +198,7 @@ void readNetlist(std::ifstream & netlist){
                 if(found1!=std::string::npos){
                     std::size_t found2 = line.find(')');
                     std::string inputName = line.substr(found1 + 1, found2 - found1 - 1);
+                    inputName = trim(inputName);
                     //TODO: check if this subtraction is valid
                     gate t = gate(inputName);
                     t.updateType("buf");
@@ -212,6 +213,7 @@ void readNetlist(std::ifstream & netlist){
                 if(found1!=std::string::npos){
                     std::size_t found2 = line.find(')');
                     std::string outputName = line.substr(found1 + 1, found2 - found1 - 1);
+                    outputName = trim(outputName);
                     //TODO: check if this subtraction is valid
                     gate t = gate(outputName);
                     outputMap.insert(std::make_pair(outputName, t));
