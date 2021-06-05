@@ -296,7 +296,7 @@ int main(int argc, char * argv[]){
         std::vector<std::string> toDecrease = current.getDericted();
         std::vector<std::string>::iterator it;
         if(!toDecrease.empty()) {
-            for(auto it = toDecrease.begin(); it != toDecrease.end(); ++it) {
+            for(it = toDecrease.begin(); it != toDecrease.end(); ++it) {
                 gate& decreasing = gateMap.at(*it);
 //                std::cout << "to decrease is " << "gate is " << decreasing.getName() << "value is" << decreasing.readInDegree() << std::endl;
                 decreasing.decreaseInDegree();
