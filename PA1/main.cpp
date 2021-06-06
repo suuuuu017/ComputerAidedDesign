@@ -217,24 +217,17 @@ void readNetlist(std::ifstream & netlist){
                 std::size_t found2 = line.find('(');
                 std::string gateName = line.substr(0, found1);
                 gateName = trim(gateName);
-//                std::cout << "gatename is ???" << gateName << " end"<< std::endl;
                 gate t = gate(gateName);
                 if(gateMap.find(gateName) == gateMap.end()){
-//                    std::cout << "gate is  ,,,,, " << gateName << std::endl;
                     t = gate(gateName);
                     gateMap.insert(std::make_pair(gateName, t));
                 }
-//                gate t = gate(gateName);
                 else{
                     t = gateMap.at(gateName);
                 }
-                //TODO: fix this hard code
                 std::string gateType = line.substr(found1 + 1, found2 - found1 - 1);
                 gateType = trim(gateType);
-//                std::cout << "gatetype is ......." << gateType << " end"<< std::endl;
-//                std::cout << gateType << " gate type is " << std::endl;
                 t.updateType(gateType);
-                //TODO: fix this hard code
                 std::string Name = line.substr(found2 + 1);
                 std::stringstream ss(Name);
                 while(ss.good()){
@@ -246,9 +239,7 @@ void readNetlist(std::ifstream & netlist){
                     }
                     t.addNeighbour(gaten);
                     t.increaseInDegree();
-//                    std::cout << " degree is   " << t.readInDegree() << std::endl;
                     if(gateMap.find(gaten) == gateMap.end()){
-//                        std::cout << "gate is   " << gaten << std::endl;
                         gate f = gate(gaten);
                         f.addDirected(gateName);
                         gateMap.insert(std::make_pair(gaten, f));
@@ -259,13 +250,9 @@ void readNetlist(std::ifstream & netlist){
                         f.addDirected(gateName);
                         itt->second = f;
                     }
-//                    gateMap.insert(std::make_pair(gaten, fix));
                 }
                 std::map<std::string, gate>::iterator itt = gateMap.find(gateName);
                 itt->second = t;
-//                if(flag){
-//                    gateMap.insert(std::make_pair(gateName, t));
-//                }
                 continue;
             }
         }
@@ -313,14 +300,12 @@ int main(int argc, char * argv[]){
         gate current = q.front();
         type = (current.readType()).data();
         current.logicOperation(type, current.getNeighbour());
-//        std::cout << " type is " << type << " gate is " << current.getName() << " value is " << current.getVal() << std::endl;
         gateMap.at(current.getName()).updateVal(current.getVal());
         std::vector<std::string> toDecrease = current.getDericted();
         std::vector<std::string>::iterator it;
         if(!toDecrease.empty()) {
             for(it = toDecrease.begin(); it != toDecrease.end(); ++it) {
                 gate& decreasing = gateMap.at(*it);
-//                std::cout << "to decrease is " << "gate is " << decreasing.getName() << "value is" << decreasing.readInDegree() << std::endl;
                 decreasing.decreaseInDegree();
                 if (decreasing.readInDegree() == 0) {
                     q.push(decreasing);
