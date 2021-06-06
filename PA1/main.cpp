@@ -192,7 +192,7 @@ void readNetlist(std::ifstream & netlist){
                 continue;
             }
                 //TODO: do i have to consider "input"?
-            else if(!line.find("INPUT")){
+            else if(!line.find("INPUT") || !line.find("input")){
                 std::size_t found1 = 0;
                 found1 = line.find('(');
                 if(found1!=std::string::npos){
@@ -206,7 +206,7 @@ void readNetlist(std::ifstream & netlist){
                 }
                 continue;
             }
-            else if(!line.find("OUTPUT")){
+            else if(!line.find("OUTPUT")|| !line.find("output")){
                 //TODO: why is !line.find
                 std::size_t found1 = 0;
                 found1 = line.find('(');
