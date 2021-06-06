@@ -51,7 +51,7 @@ protected:
     std::string gateType;
 
 public:
-    gate(std::string n, bool v = false, bool visit = false){
+    gate(std::string& n, bool v = false, bool visit = false){
         this->name = n;
         this->val = v;
         this->visited = visit;
@@ -90,11 +90,11 @@ public:
         this->visited = true;
     }
 
-    void addNeighbour(std::string gate){
+    void addNeighbour(std::string & gate){
         this->neighbour.push_back(gate);
     };
 
-    void addDirected(std::string gate){
+    void addDirected(std::string& gate){
         this->directed.push_back(gate);
     };
 
@@ -111,7 +111,6 @@ public:
         std::string directedName = "";
         std::vector<std::string>::iterator it;
         for(it = directed.begin(); it != directed.end(); ++it) {
-//            std::cout << "it is " << *it << std::endl;
             directedName = directedName + (*it);
         }
         return directedName;
@@ -124,7 +123,6 @@ public:
         if(input.size()) {
             inGateName = *input.begin();
             output = gateMap.at(inGateName).getVal();
-//            std::cout << inGateName << output << std::endl;
             if (strcmp(op, "AND") == 0 || strcmp(op, "and") == 0) {
                 for (it = ++input.begin(); it != input.end(); ++it) {
                     output = output & gateMap.at((*it)).getVal();
@@ -159,7 +157,6 @@ public:
             }
         }
         this->val = output;
-//        std::cout << "current gate operation is on   "<< name << "    " << this->val << " this is the value" << std::endl;
     };
 
     void increaseInDegree(){
@@ -190,7 +187,6 @@ void readNetlist(std::ifstream & netlist){
             else if(line == ""){
                 continue;
             }
-                //TODO: do i have to consider "input"?
             else if(!line.find("INPUT") || !line.find("input")){
                 std::size_t found1 = 0;
                 found1 = line.find('(');
@@ -198,7 +194,6 @@ void readNetlist(std::ifstream & netlist){
                     std::size_t found2 = line.find(')');
                     std::string inputName = line.substr(found1 + 1, found2 - found1 - 1);
                     inputName = trim(inputName);
-                    //TODO: check if this subtraction is valid
                     gate t = gate(inputName);
                     t.updateType("buf");
                     gateMap.insert(std::make_pair(inputName, t));
@@ -206,28 +201,33 @@ void readNetlist(std::ifstream & netlist){
                 continue;
             }
             else if(!line.find("OUTPUT")|| !line.find("output")){
-                //TODO: why is !line.find
                 std::size_t found1 = 0;
                 found1 = line.find('(');
                 if(found1!=std::string::npos){
                     std::size_t found2 = line.find(')');
                     std::string outputName = line.substr(found1 + 1, found2 - found1 - 1);
                     outputName = trim(outputName);
-                    //TODO: check if this subtraction is valid
                     gate t = gate(outputName);
                     outputMap.insert(std::make_pair(outputName, t));
                 }
                 continue;
             }
             else if(line.find("=")){
-                //TODO: why is !line.find
                 std::size_t found1 = line.find('=');
                 std::size_t found2 = line.find('(');
-                //TODO: fix this hard code
                 std::string gateName = line.substr(0, found1);
                 gateName = trim(gateName);
 //                std::cout << "gatename is ???" << gateName << " end"<< std::endl;
                 gate t = gate(gateName);
+                if(gateMap.find(gateName) == gateMap.end()){
+//                    std::cout << "gate is  ,,,,, " << gateName << std::endl;
+                    t = gate(gateName);
+                    gateMap.insert(std::make_pair(gateName, t));
+                }
+//                gate t = gate(gateName);
+                else{
+                    t = gateMap.at(gateName);
+                }
                 //TODO: fix this hard code
                 std::string gateType = line.substr(found1 + 1, found2 - found1 - 1);
                 gateType = trim(gateType);
@@ -238,18 +238,34 @@ void readNetlist(std::ifstream & netlist){
                 std::string Name = line.substr(found2 + 1);
                 std::stringstream ss(Name);
                 while(ss.good()){
-                    std::string gate;
-                    getline( ss, gate, ',' );
-                    if(gate.find(')')){
-                        gate = gate.substr(0, gate.find(')'));
-                        gate = trim(gate);
+                    std::string gaten;
+                    getline( ss, gaten, ',' );
+                    if(gaten.find(')')){
+                        gaten = gaten.substr(0, gaten.find(')'));
+                        gaten = trim(gaten);
                     }
-                    t.addNeighbour(gate);
+                    t.addNeighbour(gaten);
                     t.increaseInDegree();
 //                    std::cout << " degree is   " << t.readInDegree() << std::endl;
-                    gateMap.at(gate).addDirected(gateName);
+                    if(gateMap.find(gaten) == gateMap.end()){
+//                        std::cout << "gate is   " << gaten << std::endl;
+                        gate f = gate(gaten);
+                        f.addDirected(gateName);
+                        gateMap.insert(std::make_pair(gaten, f));
+                    }
+                    else{
+                        std::map<std::string, gate>::iterator itt = gateMap.find(gaten);
+                        gate f = gateMap.at(gaten);
+                        f.addDirected(gateName);
+                        itt->second = f;
+                    }
+//                    gateMap.insert(std::make_pair(gaten, fix));
                 }
-                gateMap.insert(std::make_pair(gateName, t));
+                std::map<std::string, gate>::iterator itt = gateMap.find(gateName);
+                itt->second = t;
+//                if(flag){
+//                    gateMap.insert(std::make_pair(gateName, t));
+//                }
                 continue;
             }
         }
@@ -312,10 +328,7 @@ int main(int argc, char * argv[]){
             }
         }
         current.visitGate();
-//        std::cout << q.front().getName() << " visitibg front" << q.front().readDirected() << " "
-//                  << std::endl;
         q.pop();
-//        q.pop();
     }
 
     std::map<std::string, gate>::iterator it;
@@ -326,23 +339,5 @@ int main(int argc, char * argv[]){
         bool val = gateMap.at(name).getVal();
         std::cout << val << std::endl;
     }
-
-//    std::map<std::string, gate, int>::iterator it;
-
-//    for (it = gateMap.begin(); it != gateMap.end(); it++){
-//        std::cout << it->first    // string (key)
-//                  << " : name is "
-//                  << it->second.getName()   // string's value
-//                  << " type is "
-//                  << it->second.readType()
-//                  << " neighbout is "
-//                  << it->second.readNeightbour()
-//                  << " directed is "
-//                  << it->second.readDirected()
-//                  << " indegree is"
-//                  << it->second.readInDegree()
-//                  << std::endl;
-//
-//    }
 
 };
