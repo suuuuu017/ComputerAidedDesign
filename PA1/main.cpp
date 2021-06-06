@@ -156,7 +156,6 @@ public:
             } else if (strcmp(op, "NOT") == 0 || strcmp(op, "not") == 0) {
                 output = !output;
             } else if (strcmp(op, "BUF") == 0 || strcmp(op, "buf") == 0) {
-                output = output;
             }
         }
         this->val = output;
@@ -293,9 +292,10 @@ int main(int argc, char * argv[]){
 
     readInputVal(inputValue);
 
+    const char *type;
     while(!q.empty()){
         gate current = q.front();
-        const char *type = (current.readType()).data();
+        type = (current.readType()).data();
         current.logicOperation(type, current.getNeighbour());
 //        std::cout << " type is " << type << " gate is " << current.getName() << " value is " << current.getVal() << std::endl;
         gateMap.at(current.getName()).updateVal(current.getVal());
