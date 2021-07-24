@@ -6,22 +6,30 @@
 
 class tooFewArgument{};
 
-CubeList complement(CubeList& cubel, CubeList &resultList){
-    if(cubel.isEmptyList(resultList)){
+CubeList complement(CubeList cubel){
+    std::cout << "input cube is " << std::endl;
+    cubel.readCubeList();
+    if(cubel.isEmptyList()){
+        std::cout << "here1" << std::endl;
+        CubeList resultList(cubel.readCubeLength());
         Cube tmpcube(cubel.readCubeLength());
         resultList.pushbackCube(tmpcube);
         return resultList;
     }
-    else if(cubel.containDontCare(resultList)){
+    else if(cubel.containDontCare()){
+        std::cout << "here2" << std::endl;
+        CubeList resultList(cubel.readCubeLength());
         return resultList;
     }
-    else if(cubel.containOneCube(resultList)){
-//        std::cout << "here" << std::endl;
+    else if(cubel.containOneCube()){
+        std::cout << "here" << std::endl;
+        CubeList resultList(cubel.readCubeLength());
         CubeList cubeR = cubel.deMorgan(cubel);
         resultList.concatList(cubeR);
         return resultList;
     }
     else{
+        std::cout << "wtd" << std::endl;
         int x = cubel.chooseBinatevar(cubel);
         std::cout << "x is " << x << std::endl;
 
@@ -33,19 +41,19 @@ CubeList complement(CubeList& cubel, CubeList &resultList){
         std::cout << "neCo is " << std::endl;
         nCo.readCubeList();
 
-        CubeList P = complement(pCo, resultList);
+        CubeList P = complement(pCo);
         std::cout << "P is " << std::endl;
         P.readCubeList();
-        CubeList N = complement(nCo, resultList);
+        CubeList N = complement(nCo);
+        std::cout << "N is " << std::endl;
+        N.readCubeList();
 
         P = P.positiveCo(P, x);
         N = N.negativeCo(N, x);
 
-        resultList.concatList(P);
-        resultList.concatList(N);
-        return resultList;
+        P.concatList(N);
+        return P;
     }
-    return resultList;
 }
 
 int main(int argc, char * argv[]){
@@ -94,7 +102,7 @@ int main(int argc, char * argv[]){
 
     CubeList resultCubeList(cubelength);
 
-    complement(cubelist, resultCubeList);
+    resultCubeList = complement(cubelist);
 
     std::cout << "result cube list is" << std::endl;
     std::cout << resultCubeList.readCubeLength() << std::endl;

@@ -49,11 +49,11 @@ public:
 
     int readcubelistLength() const;
 
-    bool isEmptyList(CubeList &resultList);
+    bool isEmptyList();
 
-    bool containDontCare(CubeList &resultList);
+    bool containDontCare();
 
-    bool containOneCube(CubeList &resultList);
+    bool containOneCube();
 
     CubeList deMorgan(CubeList inputCubeList);
 

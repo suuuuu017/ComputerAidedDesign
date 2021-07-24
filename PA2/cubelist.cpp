@@ -27,11 +27,11 @@ int CubeList::readcubelistLength() const {
     return cubelistLength;
 }
 
-bool CubeList::isEmptyList(CubeList &resultList) {
-    return cubelistLength == 0;
+bool CubeList::isEmptyList() {
+    return cubelist.size() == 0;
 }
 
-bool CubeList::containDontCare(CubeList &resultList) {
+bool CubeList::containDontCare() {
     std::string dc(this->readCubeLength(), '-');
     std::vector<Cube>::iterator it;
     for(it = cubelist.begin(); it!= cubelist.end(); ++it){
@@ -42,7 +42,7 @@ bool CubeList::containDontCare(CubeList &resultList) {
     return false;
 }
 
-bool CubeList::containOneCube(CubeList &resultList) {
+bool CubeList::containOneCube() {
     return cubelistLength == 1;
 }
 
