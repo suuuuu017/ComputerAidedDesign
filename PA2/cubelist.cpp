@@ -43,7 +43,7 @@ bool CubeList::containDontCare() {
 }
 
 bool CubeList::containOneCube() {
-    return cubelistLength == 1;
+    return cubelist.size() == 1;
 }
 
 CubeList CubeList::deMorgan(CubeList inputCubeList) {
@@ -237,7 +237,7 @@ CubeList CubeList::positiveAnd(CubeList inputCubeList, int var) {
     return inputCubeList;
 }
 
-CubeList CubeList::NegativeAnd(CubeList inputCubeList, int var) {
+CubeList CubeList::negativeAnd(CubeList inputCubeList, int var) {
     std::vector<Cube>::iterator it;
 
     for(it = inputCubeList.cubelist.begin(); it != inputCubeList.cubelist.end(); it++){

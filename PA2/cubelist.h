@@ -67,5 +67,5 @@ public:
 
     CubeList positiveAnd(CubeList inputCubeList, int var);
 
-    CubeList NegativeAnd(CubeList inputCubeList, int var);
+    CubeList negativeAnd(CubeList inputCubeList, int var);
 };

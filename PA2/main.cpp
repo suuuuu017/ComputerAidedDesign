@@ -10,26 +10,25 @@ CubeList complement(CubeList cubel){
     std::cout << "input cube is " << std::endl;
     cubel.readCubeList();
     if(cubel.isEmptyList()){
-        std::cout << "here1" << std::endl;
+//        std::cout << "here1" << std::endl;
         CubeList resultList(cubel.readCubeLength());
         Cube tmpcube(cubel.readCubeLength());
         resultList.pushbackCube(tmpcube);
         return resultList;
     }
     else if(cubel.containDontCare()){
-        std::cout << "here2" << std::endl;
+//        std::cout << "here2" << std::endl;
         CubeList resultList(cubel.readCubeLength());
         return resultList;
     }
     else if(cubel.containOneCube()){
-        std::cout << "here" << std::endl;
+        std::cout << "here one cube" << std::endl;
         CubeList resultList(cubel.readCubeLength());
         CubeList cubeR = cubel.deMorgan(cubel);
         resultList.concatList(cubeR);
         return resultList;
     }
     else{
-        std::cout << "wtd" << std::endl;
         int x = cubel.chooseBinatevar(cubel);
         std::cout << "x is " << x << std::endl;
 
@@ -48,8 +47,12 @@ CubeList complement(CubeList cubel){
         std::cout << "N is " << std::endl;
         N.readCubeList();
 
-        P = P.positiveCo(P, x);
-        N = N.negativeCo(N, x);
+        P = P.positiveAnd(P, x);
+        std::cout << "P fillingin is " << std::endl;
+        P.readCubeList();
+        N = N.negativeAnd(N, x);
+        std::cout << "P fillingin is " << std::endl;
+        P.readCubeList();
 
         P.concatList(N);
         return P;
