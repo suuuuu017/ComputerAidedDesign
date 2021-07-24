@@ -74,6 +74,117 @@ void CubeList::concatList(CubeList inputCubeList) {
     this->cubelist.insert(cubelist.end(), inputCubeList.cubelist.begin(), inputCubeList.cubelist.end());
 }
 
+int CubeList::chooseBinatevar(CubeList inputCubeList) {
+    int varNum = 0;
+    int rank[cubeLength][5];
+    for(int i = 0; i < cubeLength; i++){
+        for(int j = 0; j < 4; j++){
+            rank[i][j] = 0;
+        }
+    }
+
+    bool binateE = false;
+    //first positive, second negative, third is absolut, fourth is the sum
+    for(int i = 0; i < inputCubeList.cubelist.size(); i++){
+        bool flagforP = false;
+        bool flagforN = false;
+        for(int j = 0; j < inputCubeList.cubelist[i].cube.size(); j++){
+            if(inputCubeList.cubelist[i].cube[j] == '1'){
+                rank[j][0] = rank[j][0] + 1;
+                flagforP = true;
+            }
+            else if(inputCubeList.cubelist[i].cube[j] == '0'){
+                rank[j][1] = rank[j][1] + 1;
+                flagforN = true;
+            }
+        }
+        if(flagforP && flagforN){
+            binateE = true;
+            rank[i][4] = 1;
+        }
+    }
+
+    for(int i = 0; i < cubeLength; i++){
+        rank[i][2] = abs(rank[i][0] - rank[i][1]);
+        rank[i][3] = abs(rank[i][0] + rank[i][1]);
+    }
+
+    if(!binateE){
+        std::vector<int> tie2Breaker;
+        int unateNum = 0;
+
+        for(int i = 0; i < cubeLength; i++) {
+            if (rank[i][3] > unateNum) {
+                unateNum = rank[i][3];
+                varNum = i;
+            }
+        }
+        for(int i = 0; i < cubeLength; i++){
+            if(rank[i][3] == unateNum){
+                tie2Breaker.push_back(i);
+            }
+        }
+
+        if(tie2Breaker.size() == 1){
+            return varNum;
+        }
+
+        int lowestIndex = cubeLength;
+        for(int i = 0; i < tie2Breaker.size(); i++){
+            if(tie2Breaker[i] < lowestIndex){
+                lowestIndex = tie2Breaker[i];
+            }
+        }
+        return lowestIndex;
+    }
+
+    int binateNum = 0;
+
+    std::vector<int> tieBinate;
+
+    for(int i = 0; i < cubeLength; i++) {
+        if (rank[i][3] > binateNum && rank[i][4] == 1) {
+            binateNum = rank[i][3];
+            varNum = i;
+        }
+    }
+    for(int i = 0; i < cubeLength; i++){
+        if(rank[i][3] == binateNum && rank[i][4] == 1){
+            tieBinate.push_back(i);
+        }
+    }
+    if(tieBinate.size() == 1){
+        return varNum;
+    }
+
+    int breaktie1 = 1000000000;
+
+    std::vector<int> tie1Breaker;
+
+    for(int i = 0; i < tieBinate.size(); i++){
+        if(rank[tieBinate[i]][2] < breaktie1 && rank[tieBinate[i]][4] == 1){
+            breaktie1 = rank[i][2];
+            varNum = tieBinate[i];
+        }
+    }
+    for(int i = 0; i < tieBinate.size(); i++){
+        if(rank[tieBinate[i]][2] == breaktie1 && rank[tieBinate[i]][4] == 1){
+            tie1Breaker.push_back(tieBinate[i]);
+        }
+    }
+    if(tie1Breaker.size() == 1){
+        return varNum;
+    }
+
+    int lowestIndex = cubeLength;
+    for(int i = 0; i < tie1Breaker.size(); i++){
+        if(tie1Breaker[i] < lowestIndex){
+            lowestIndex = tie1Breaker[i];
+        }
+    }
+    return lowestIndex;
+}
+
 
 void Cube::loadCube(std::istream &input) {
     char c;
