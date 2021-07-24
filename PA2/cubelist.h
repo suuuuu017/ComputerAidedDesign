@@ -60,4 +60,12 @@ public:
     void concatList(CubeList inputCubeList);
 
     int chooseBinatevar(CubeList inputCubeList);
+
+    CubeList positiveCo(CubeList inputCubeList, int var);
+
+    CubeList negativeCo(CubeList inputCubeList, int var);
+
+    CubeList positiveAnd(CubeList inputCubeList, int var);
+
+    CubeList NegativeAnd(CubeList inputCubeList, int var);
 };

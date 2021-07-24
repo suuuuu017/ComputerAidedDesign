@@ -23,8 +23,27 @@ CubeList complement(CubeList& cubel, CubeList &resultList){
     }
     else{
         int x = cubel.chooseBinatevar(cubel);
-
         std::cout << "x is " << x << std::endl;
+
+
+        CubeList pCo = cubel.positiveCo(cubel, x);
+        std::cout << "poCo is " << std::endl;
+        pCo.readCubeList();
+        CubeList nCo = cubel.negativeCo(cubel, x);
+        std::cout << "neCo is " << std::endl;
+        nCo.readCubeList();
+
+        CubeList P = complement(pCo, resultList);
+        std::cout << "P is " << std::endl;
+        P.readCubeList();
+        CubeList N = complement(nCo, resultList);
+
+        P = P.positiveCo(P, x);
+        N = N.negativeCo(N, x);
+
+        resultList.concatList(P);
+        resultList.concatList(N);
+        return resultList;
     }
     return resultList;
 }

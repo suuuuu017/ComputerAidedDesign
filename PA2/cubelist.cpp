@@ -191,6 +191,62 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
     return lowestIndex;
 }
 
+CubeList CubeList::positiveCo(CubeList inputCubeList, int var) {
+    CubeList returnP(cubeLength);
+
+    for(int i = 0; i < inputCubeList.cubelist.size(); i ++){
+        if(inputCubeList.cubelist[i].cube[var] == '1'){
+            inputCubeList.cubelist[i].cube[var] = '-';
+            returnP.pushbackCube(inputCubeList.cubelist[i]);
+        }
+        else if(inputCubeList.cubelist[i].cube[var] == '-'){
+            returnP.pushbackCube(inputCubeList.cubelist[i]);
+        }
+        else if(inputCubeList.cubelist[i].cube[var] == '0'){
+            continue;
+        }
+    }
+    return returnP;
+}
+
+CubeList CubeList::negativeCo(CubeList inputCubeList, int var) {
+    CubeList returnN(cubeLength);
+
+    for(int i = 0; i < inputCubeList.cubelist.size(); i ++){
+        if(inputCubeList.cubelist[i].cube[var] == '0'){
+            inputCubeList.cubelist[i].cube[var] = '-';
+            returnN.pushbackCube(inputCubeList.cubelist[i]);
+        }
+        else if(inputCubeList.cubelist[i].cube[var] == '-'){
+            returnN.pushbackCube(inputCubeList.cubelist[i]);
+        }
+        else if(inputCubeList.cubelist[i].cube[var] == '1'){
+            continue;
+        }
+    }
+    return returnN;
+}
+
+CubeList CubeList::positiveAnd(CubeList inputCubeList, int var) {
+    std::vector<Cube>::iterator it;
+
+    for(it = inputCubeList.cubelist.begin(); it != inputCubeList.cubelist.end(); it++){
+        it->cube[var] = '1';
+    }
+
+    return inputCubeList;
+}
+
+CubeList CubeList::NegativeAnd(CubeList inputCubeList, int var) {
+    std::vector<Cube>::iterator it;
+
+    for(it = inputCubeList.cubelist.begin(); it != inputCubeList.cubelist.end(); it++){
+        it->cube[var] = '0';
+    }
+
+    return inputCubeList;
+}
+
 
 void Cube::loadCube(std::istream &input) {
     char c;
