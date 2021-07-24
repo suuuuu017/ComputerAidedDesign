@@ -14,6 +14,7 @@ void CubeList::pushbackCube(Cube cube) {
 
 void CubeList::readCubeList() {
     for(int i= 0; i < cubelist.size(); i++){
+//        std::cout << i << std::endl;
         std::cout << cubelist[i].readCube() << std::endl;
     }
 }
@@ -55,12 +56,14 @@ CubeList CubeList::deMorgan(CubeList inputCubeList) {
         }
         else if(cube.cube[it] == '1'){
             Cube returnCube(cubeLength);
-            returnCube.cube[it] = 1;
+            returnCube.cube[it] = '0';
+//            std::cout << "the complement for 1 " << returnCube.readCube() << std::endl;
             returnCubeList.pushbackCube(returnCube);
         }
         else if(cube.cube[it] == '0'){
             Cube returnCube(cubeLength);
-            returnCube.cube[it] = 0;
+            returnCube.cube[it] = '1';
+//            std::cout << "the complement for 0 " << returnCube.readCube() << std::endl;
             returnCubeList.pushbackCube(returnCube);
         }
     }
@@ -88,4 +91,7 @@ std::string Cube::readCube() {
 }
 
 Cube::Cube(int length): cube(length, '-') {
+}
+
+Cube::Cube(): cube(0) {
 }

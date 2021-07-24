@@ -16,11 +16,11 @@ CubeList complement(CubeList& cubel, CubeList &resultList){
         return resultList;
     }
     else if(cubel.containOneCube(resultList)){
+//        std::cout << "here" << std::endl;
         CubeList cubeR = cubel.deMorgan(cubel);
         resultList.concatList(cubeR);
         return resultList;
     }
-
     return resultList;
 }
 
@@ -69,6 +69,12 @@ int main(int argc, char * argv[]){
     std::cout << cubelist.readcubelistLength() << std::endl;
 
     CubeList resultCubeList(cubelength);
+
+    complement(cubelist, resultCubeList);
+
+    std::cout << "result cube list is" << std::endl;
+    std::cout << resultCubeList.readCubeLength() << std::endl;
+    resultCubeList.readCubeList();
 
 
 

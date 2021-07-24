@@ -21,6 +21,8 @@ private:
     std::vector<char> cube;
     friend class CubeList;
 public:
+    Cube();
+
     Cube(int length);
 
     void loadCube(std::istream &input);
