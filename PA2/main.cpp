@@ -23,7 +23,7 @@ int main(int argc, char * argv[]){
     while(inputFile){
         getline(inputFile, line);
         if(inputFile){
-            std::cout << line << std::endl;
+//            std::cout << line << std::endl;
             std::stringstream instr(line);
             instr >> cubelength;
         }
@@ -32,7 +32,23 @@ int main(int argc, char * argv[]){
 
     CubeList cubelist(cubelength);
 
-    std::cout << cubelist.readCubeLength();
+    std::cout << cubelist.readCubeLength() << std::endl;
+
+    while(inputFile){
+        getline(inputFile, line);
+        if(inputFile){
+//            std::cout << line << std::endl;
+            std::stringstream instr(line);
+            Cube tmpCube;
+            tmpCube.loadCube(instr);
+            cubelist.pushbackCube(tmpCube);
+            cubelist.incrementCubelistLength();
+        }
+    }
+
+    cubelist.readCubeList();
+
+    std::cout << cubelist.readcubelistLength() << std::endl;
 
     inputFile.close();
 

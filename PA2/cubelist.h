@@ -19,7 +19,9 @@ class Cube{
 private:
     std::vector<char> cube;
 public:
+    void loadCube(std::istream &input);
 
+    std::string readCube();
 };
 
 //a vector of cube class
@@ -33,5 +35,11 @@ public:
 
     int readCubeLength() const;
 
-    void loadCube(std::istream &input);
+    void pushbackCube(Cube cube);
+
+    void readCubeList();
+
+    void incrementCubelistLength();
+
+    int readcubelistLength() const;
 };
