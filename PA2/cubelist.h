@@ -15,10 +15,14 @@
 #include <map>
 #include <set>
 
+
 class Cube{
 private:
     std::vector<char> cube;
+    friend class CubeList;
 public:
+    Cube(int length);
+
     void loadCube(std::istream &input);
 
     std::string readCube();
@@ -42,4 +46,14 @@ public:
     void incrementCubelistLength();
 
     int readcubelistLength() const;
+
+    bool isEmptyList(CubeList &resultList);
+
+    bool containDontCare(CubeList &resultList);
+
+    bool containOneCube(CubeList &resultList);
+
+    CubeList deMorgan(CubeList inputCubeList);
+
+    void concatList(CubeList inputCubeList);
 };
