@@ -16,10 +16,22 @@
 #include <set>
 
 class Cube{
+private:
+    std::vector<char> cube;
+public:
 
 };
 
 //a vector of cube class
 class CubeList{
+private:
+    int cubeLength;
+    int cubelistLength;
+    std::vector<Cube> cubelist;
+public:
+    CubeList(int cubeLength);
 
+    int readCubeLength() const;
+
+    void loadCube(std::istream &input);
 };
