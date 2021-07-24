@@ -58,4 +58,6 @@ public:
     CubeList deMorgan(CubeList inputCubeList);
 
     void concatList(CubeList inputCubeList);
+
+    int chooseBinatevar(CubeList inputCubeList);
 };

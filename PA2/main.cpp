@@ -21,6 +21,11 @@ CubeList complement(CubeList& cubel, CubeList &resultList){
         resultList.concatList(cubeR);
         return resultList;
     }
+    else{
+        int x = cubel.chooseBinatevar(cubel);
+
+        std::cout << "x is " << x << std::endl;
+    }
     return resultList;
 }
 

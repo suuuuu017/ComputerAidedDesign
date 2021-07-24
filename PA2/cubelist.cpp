@@ -83,7 +83,6 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
         }
     }
 
-    bool binateE = false;
     //first positive, second negative, third is absolut, fourth is the sum
     for(int i = 0; i < inputCubeList.cubelist.size(); i++){
         bool flagforP = false;
@@ -91,16 +90,10 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
         for(int j = 0; j < inputCubeList.cubelist[i].cube.size(); j++){
             if(inputCubeList.cubelist[i].cube[j] == '1'){
                 rank[j][0] = rank[j][0] + 1;
-                flagforP = true;
             }
             else if(inputCubeList.cubelist[i].cube[j] == '0'){
                 rank[j][1] = rank[j][1] + 1;
-                flagforN = true;
             }
-        }
-        if(flagforP && flagforN){
-            binateE = true;
-            rank[i][4] = 1;
         }
     }
 
@@ -109,7 +102,16 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
         rank[i][3] = abs(rank[i][0] + rank[i][1]);
     }
 
+    bool binateE = false;
+    for(int i = 0; i < cubeLength; i++){
+        if(rank[i][0] > 0 && rank[i][1] > 0){
+            rank[i][4] = 1;
+            binateE = true;
+        }
+    }
+
     if(!binateE){
+//        std::cout << "here" << std::endl;
         std::vector<int> tie2Breaker;
         int unateNum = 0;
 
@@ -150,12 +152,16 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
     }
     for(int i = 0; i < cubeLength; i++){
         if(rank[i][3] == binateNum && rank[i][4] == 1){
+//            std::cout << "biNum is " << binateNum << std::endl;
             tieBinate.push_back(i);
         }
     }
     if(tieBinate.size() == 1){
+//        std::cout << "here2" << std::endl;
         return varNum;
     }
+
+//    std::cout << "tiesNum is " << tieBinate.size() << std::endl;
 
     int breaktie1 = 1000000000;
 
