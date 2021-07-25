@@ -150,7 +150,7 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
     }
     for(int i = 0; i < cubeLength; i++){
         if(rank[i][3] == binateNum && rank[i][4] == 1){
-            std::cout << "biNum is " << binateNum << std::endl;
+//            std::cout << "biNum is " << binateNum << std::endl;
             tieBinate.push_back(i);
         }
     }
@@ -159,10 +159,10 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
         return varNum;
     }
 
-    std::cout << "ties  " << std::endl;
-    for(unsigned int i = 0; i < tieBinate.size(); i++) {
-        std::cout << tieBinate[i]  << " "<< rank[tieBinate[i]][2]<< " "<< rank[tieBinate[i]][4]<< std::endl;
-    }
+//    std::cout << "ties  " << std::endl;
+//    for(unsigned int i = 0; i < tieBinate.size(); i++) {
+//        std::cout << tieBinate[i]  << " "<< rank[tieBinate[i]][2]<< " "<< rank[tieBinate[i]][4]<< std::endl;
+//    }
 //    std::cout << "tiesNum is " << tieBinate.size() << std::endl;
 
     int breaktie1 = 1000000000;
@@ -175,7 +175,7 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
             varNum = tieBinate[i];
         }
     }
-    std::cout << "num is " << breaktie1 << std::endl;
+//    std::cout << "num is " << breaktie1 << std::endl;
     for(unsigned int i = 0; i < tieBinate.size(); i++){
         if(rank[tieBinate[i]][2] == breaktie1 && rank[tieBinate[i]][4] == 1){
             tie1Breaker.push_back(tieBinate[i]);
@@ -185,19 +185,19 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
         return varNum;
     }
 
-    std::cout << "ties arew " << std::endl;
-    for(unsigned int i = 0; i < tie1Breaker.size(); i++) {
-        std::cout << tie1Breaker[i] << std::endl;
-    }
+//    std::cout << "ties arew " << std::endl;
+//    for(unsigned int i = 0; i < tie1Breaker.size(); i++) {
+//        std::cout << tie1Breaker[i] << std::endl;
+//    }
 
     int lowestIndex = cubeLength;
     for(unsigned int i = 0; i < tie1Breaker.size(); i++){
-        std::cout << "ties arew " << std::endl;
-        std::cout << tie1Breaker[i] << std::endl;
+//        std::cout << "ties arew " << std::endl;
+//        std::cout << tie1Breaker[i] << std::endl;
         if(tie1Breaker[i] < lowestIndex){
             lowestIndex = tie1Breaker[i] ;
-            std::cout << std::endl;
-            std::cout << lowestIndex << std::endl;
+//            std::cout << std::endl;
+//            std::cout << lowestIndex << std::endl;
         }
     }
     return lowestIndex;
