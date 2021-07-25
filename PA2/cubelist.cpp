@@ -13,7 +13,7 @@ void CubeList::pushbackCube(Cube cube) {
 }
 
 void CubeList::readCubeList() {
-    for(int i= 0; i < cubelist.size(); i++){
+    for(unsigned int i= 0; i < cubelist.size(); i++){
 //        std::cout << i << std::endl;
         std::cout << cubelist[i].readCube() << std::endl;
     }
@@ -84,8 +84,8 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
     }
 
     //first positive, second negative, third is absolut, fourth is the sum
-    for(int i = 0; i < inputCubeList.cubelist.size(); i++){
-        for(int j = 0; j < inputCubeList.cubelist[i].cube.size(); j++){
+    for(unsigned int i = 0; i < inputCubeList.cubelist.size(); i++){
+        for(unsigned int j = 0; j < inputCubeList.cubelist[i].cube.size(); j++){
             if(inputCubeList.cubelist[i].cube[j] == '1'){
                 rank[j][0] = rank[j][0] + 1;
             }
@@ -130,7 +130,7 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
         }
 
         int lowestIndex = cubeLength;
-        for(int i = 0; i < tie2Breaker.size(); i++){
+        for(unsigned int i = 0; i < tie2Breaker.size(); i++){
             if(tie2Breaker[i] < lowestIndex){
                 lowestIndex = tie2Breaker[i];
             }
@@ -160,7 +160,7 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
     }
 
     std::cout << "ties  " << std::endl;
-    for(int i = 0; i < tieBinate.size(); i++) {
+    for(unsigned int i = 0; i < tieBinate.size(); i++) {
         std::cout << tieBinate[i]  << " "<< rank[tieBinate[i]][2]<< " "<< rank[tieBinate[i]][4]<< std::endl;
     }
 //    std::cout << "tiesNum is " << tieBinate.size() << std::endl;
@@ -169,14 +169,14 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
 
     std::vector<int> tie1Breaker;
 
-    for(int i = 0; i < tieBinate.size(); i++){
+    for(unsigned int i = 0; i < tieBinate.size(); i++){
         if(rank[tieBinate[i]][2] < breaktie1 && rank[tieBinate[i]][4] == 1){
             breaktie1 = rank[tieBinate[i]][2] ;
             varNum = tieBinate[i];
         }
     }
     std::cout << "num is " << breaktie1 << std::endl;
-    for(int i = 0; i < tieBinate.size(); i++){
+    for(unsigned int i = 0; i < tieBinate.size(); i++){
         if(rank[tieBinate[i]][2] == breaktie1 && rank[tieBinate[i]][4] == 1){
             tie1Breaker.push_back(tieBinate[i]);
         }
@@ -186,12 +186,12 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
     }
 
     std::cout << "ties arew " << std::endl;
-    for(int i = 0; i < tie1Breaker.size(); i++) {
+    for(unsigned int i = 0; i < tie1Breaker.size(); i++) {
         std::cout << tie1Breaker[i] << std::endl;
     }
 
     int lowestIndex = cubeLength;
-    for(int i = 0; i < tie1Breaker.size(); i++){
+    for(unsigned int i = 0; i < tie1Breaker.size(); i++){
         std::cout << "ties arew " << std::endl;
         std::cout << tie1Breaker[i] << std::endl;
         if(tie1Breaker[i] < lowestIndex){
@@ -206,7 +206,7 @@ int CubeList::chooseBinatevar(CubeList inputCubeList) {
 CubeList CubeList::positiveCo(CubeList inputCubeList, int var) {
     CubeList returnP(cubeLength);
 
-    for(int i = 0; i < inputCubeList.cubelist.size(); i ++){
+    for(unsigned int i = 0; i < inputCubeList.cubelist.size(); i ++){
         if(inputCubeList.cubelist[i].cube[var] == '1'){
             inputCubeList.cubelist[i].cube[var] = '-';
             returnP.pushbackCube(inputCubeList.cubelist[i]);
@@ -224,7 +224,7 @@ CubeList CubeList::positiveCo(CubeList inputCubeList, int var) {
 CubeList CubeList::negativeCo(CubeList inputCubeList, int var) {
     CubeList returnN(cubeLength);
 
-    for(int i = 0; i < inputCubeList.cubelist.size(); i ++){
+    for(unsigned int i = 0; i < inputCubeList.cubelist.size(); i ++){
         if(inputCubeList.cubelist[i].cube[var] == '0'){
             inputCubeList.cubelist[i].cube[var] = '-';
             returnN.pushbackCube(inputCubeList.cubelist[i]);
@@ -269,7 +269,7 @@ void Cube::loadCube(std::istream &input) {
 
 std::string Cube::readCube() {
     std::string output;
-    for(int i = 0; i < cube.size(); i++){
+    for(unsigned int i = 0; i < cube.size(); i++){
         output.push_back(cube[i]);
     }
     return output;
