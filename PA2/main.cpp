@@ -89,8 +89,8 @@ int main(int argc, char * argv[]){
 
     while(inputFile){
         getline(inputFile, line);
-        if(inputFile){
-//            std::cout << line << std::endl;
+        if(inputFile && (!line.empty())){
+            std::cout << "line is" << line;
             std::stringstream instr(line);
             Cube tmpCube;
             tmpCube.loadCube(instr);
